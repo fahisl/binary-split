@@ -5,7 +5,6 @@ module.exports = BinarySplit
 
 function BinarySplit (matcher) {
   if (!(this instanceof BinarySplit)) return new BinarySplit(matcher)
-  matcher = Buffer(matcher || os.EOL)
   var buffered
   return through(write, end)
 
@@ -19,10 +18,10 @@ function BinarySplit (matcher) {
     }
 
     while (true) {
-      var idx = firstMatch(buf, offset - matcher.length + 1)
-      if (idx !== -1 && idx < buf.length) {
+      var idx = firstMatch(buf, offset);
+      if (idx !== -1) {
         this.push(buf.slice(lastMatch, idx))
-        offset = idx + matcher.length
+        offset = idx + 1
         lastMatch = offset
       } else {
         buffered = buf.slice(lastMatch)
@@ -39,25 +38,15 @@ function BinarySplit (matcher) {
   }
 
   function firstMatch (buf, offset) {
-    if (offset >= buf.length) return -1
-    for (var i = offset; i < buf.length; i++) {
-      if (buf[i] === matcher[0]) {
-        if (matcher.length > 1) {
-          var fullMatch = true
-          for (var j = i, k = 0; j < i + matcher.length; j++, k++) {
-            if (buf[j] !== matcher[k]) {
-              fullMatch = false
-              break
-            }
-          }
-          if (fullMatch) return j - matcher.length
-        } else {
-          break
-        }
+    if (offset < buf.length) {
+      for (var i = offset; i < buf.length; i++) {
+        if (buf[i] === matcher) {
+          return i;
+        };
       }
     }
 
-    var idx = i + matcher.length - 1
-    return idx
+    // Offset exceeds buffer or found no match in buffer.
+    return -1;
   }
 }
