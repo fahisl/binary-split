@@ -9,7 +9,7 @@ for (var i = 0; i < 1000000; i++) {
 }
 
 var stream = through()
-.pipe(split())
+.pipe(split(10))
 .on('data', function () {})
 .on('end', function () {
   console.timeEnd('split')

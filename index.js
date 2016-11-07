@@ -1,5 +1,4 @@
 var through = require('through2')
-var os = require('os')
 
 module.exports = BinarySplit
 
@@ -18,7 +17,7 @@ function BinarySplit (matcher) {
     }
 
     while (true) {
-      var idx = firstMatch(buf, offset);
+      var idx = firstMatch(buf, offset)
       if (idx !== -1) {
         this.push(buf.slice(lastMatch, idx))
         offset = idx + 1
@@ -41,12 +40,12 @@ function BinarySplit (matcher) {
     if (offset < buf.length) {
       for (var i = offset; i < buf.length; i++) {
         if (buf[i] === matcher) {
-          return i;
-        };
+          return i
+        }
       }
     }
 
     // Offset exceeds buffer or found no match in buffer.
-    return -1;
+    return -1
   }
 }
